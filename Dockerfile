@@ -11,7 +11,7 @@ FROM cgr.dev/chainguard/python:latest AS runner
 
 WORKDIR /app
 
-COPY src/main.py .
+COPY src/ .
 COPY --from=builder /app/venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
