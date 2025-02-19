@@ -27,7 +27,6 @@ def dataframe_to_bigquery(df, client, table_id, write_disposition):
     )
     job = client.load_table_from_dataframe(df, table_id, job_config=job_config)
     job.result()
-    print(f"{len(df)} rows written to table {table_id}")
 
 
 knast_hours_schema = [

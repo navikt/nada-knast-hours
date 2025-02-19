@@ -7,7 +7,7 @@ import pandas as pd
 
 import bigquery
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%X')
 
 
 def load_and_transform_usage_data(client):
