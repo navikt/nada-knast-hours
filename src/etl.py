@@ -1,10 +1,13 @@
 import datetime
 import json
+import logging
 import os
 
 import pandas as pd
 
 import bigquery
+
+logging.basicConfig(level=logging.INFO)
 
 
 def load_and_transform_usage_data(client):
@@ -70,10 +73,13 @@ def adjust_shutdown_times(df):
 
 
 def run_etl():
+    logging.info("Starting ETL process")
     bq_client = bigquery.create_bigquery_client(os.getenv("GCP_PROJECT"))
     
+    logging.info("Loading and transforming knast usage data")
     df_usage = load_and_transform_usage_data(bq_client)
 
+    logging.info("Loading and transforming teamkatalogen data")
     df_tk = load_and_transform_tk_data(bq_client)
 
     df_merged = pd.merge(df_usage, df_tk, left_on='user', right_on='navIdent', how='left')
@@ -84,5 +90,9 @@ def run_etl():
         table_id = os.getenv("GCP_PROJECT") + os.getenv("DATASET_ID") + os.getenv("TABLE_ID")
     except: 
         table_id = "nada-prod-6977.knast.knast_hours"
-    
+
+    logging.info(f"Writing data to {table_id}")
     bigquery.dataframe_to_bigquery(df_bigquery, bq_client, table_id, "WRITE_TRUNCATE")
+    logging.info(f"{len(df_bigquery)} rows written to table {table_id}")
+    
+    logging.info("ETL process completed")
