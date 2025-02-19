@@ -1,0 +1,24 @@
+apiVersion: nais.io/v1
+kind: Naisjob
+metadata:
+  labels:
+    team: nada
+  name: naisjob-knast-hours
+  namespace: nada
+spec:
+  image: {{ image }}
+  schedule: '0 2 * * *'
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  backoffLimit: 2
+  concurrencyPolicy: Forbid
+  env:
+    - name: DATASET_ID
+      value: knast
+    - name: TABLE_ID
+      value: knast-hours
+  resources:
+    limits:
+      memory: 5Gi
+    requests:
+      memory: 1024Mi

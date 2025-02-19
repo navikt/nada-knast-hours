@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: knast-hours-alert
+  namespace: nada
+  labels:
+    team: nada
+spec:
+  groups:
+  - name: knast-hours-alert
+    rules:
+    - alert: NaisjobDown
+      expr: kube_job_failed{job_name=~"^naisjob-knast-hours.*", namespace="nada"} > 0
+      for: 2m
+      annotations:
+        consequence: Tabellen knast-hours blir ikke oppdatert
+        action: "`Se logger på https://logs.adeo.no -> søk etter pod:naisjob-knast-hours* AND namespace:nada`"
+        summary: |-
+           Naisjob naisjob-knast-hours feiler i prod-gcp namespace nada (repo https://github.com/navikt/nada-knast-hours)
+      labels:
+        namespace: nada
+        severity: critical
