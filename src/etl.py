@@ -10,7 +10,9 @@ import bigquery
 def load_and_transform_usage_data(client):
     df_started = bigquery.load_biqquery_data(client, "vm_assignments")
     df_shutdown = bigquery.load_biqquery_data(client, "workstation_shutdowns")
+    df_stop_dmp = bigquery.load_biqquery_data(client, "workstation_stops_dmp")
 
+    df_shutdown = pd.concat([df_shutdown, df_stop_dmp], ignore_index=True)
     df = pd.merge(df_started, df_shutdown, on=['user', 'instance_id'], how='left', suffixes=('_started', '_shutdown'))
 
     df["timestamp_shutdown"] = df.apply(insert_shutdown_time, axis=1)
