@@ -37,3 +37,15 @@ knast_hours_schema = [
     SchemaField("timestamp_shutdown", "TIMESTAMP"),
     SchemaField("usage_hours", "FLOAT"),
 ]
+
+
+knast_configs_schema = [
+    SchemaField("user", "STRING", description="Navident"),
+    SchemaField("image", "STRING"),
+    SchemaField("image_name", "STRING"),
+    SchemaField("image_tag", "STRING"),
+    SchemaField("machine_type", "STRING"),
+    SchemaField("created_at", "DATE"),
+    SchemaField("last_modified", "DATE"),
+    SchemaField("version", "TIMESTAMP"),
+    ]
