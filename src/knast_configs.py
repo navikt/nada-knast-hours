@@ -50,7 +50,7 @@ def run_knast_configs_etl():
         table_id = f"{project_id}.knast.knast_configs"
 
     logging.info(f"Writing data to {table_id}")
-    bigquery.dataframe_to_bigquery(df_bigquery, bq_client, table_id, "WRITE_APPEND")
+    bigquery.dataframe_to_bigquery(df_configs, bq_client, table_id, "WRITE_APPEND")
     logging.info(f"{len(df_configs)} rows written to table {table_id}")
     
     logging.info("ETL process for knast configs completed")
