@@ -12,11 +12,6 @@ spec:
   successfulJobsHistoryLimit: 1
   backoffLimit: 2
   concurrencyPolicy: Forbid
-  env:
-    - name: DATASET_ID
-      value: knast
-    - name: TABLE_ID
-      value: knast-hours
   resources:
     limits:
       memory: 5Gi

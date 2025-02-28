@@ -35,7 +35,7 @@ def unpack_configs(configs):
 
 def run_knast_configs_etl():
     logging.info("Starting ETL process for knast configs")
-    project_id = os.getenv("GCP_PROJECT")
+    project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
     
     logging.info("Listing knast configs")
     configs = list_workstation_configs("knada-gcp", "knada")
@@ -44,10 +44,7 @@ def run_knast_configs_etl():
     df_configs = unpack_configs(configs)
 
     bq_client = bigquery.create_bigquery_client(project_id)
-    try: 
-        table_id = f"{project_id}.{os.getenv("DATASET_ID")}.{os.getenv("TABLE_ID")}"
-    except: 
-        table_id = f"{project_id}.knast.knast_configs"
+    table_id = f"{project_id}.knast.knast_configs"
 
     logging.info(f"Writing data to {table_id}")
     bigquery.dataframe_to_bigquery(df_configs, bq_client, table_id, "WRITE_APPEND")
