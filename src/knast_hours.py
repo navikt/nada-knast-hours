@@ -72,7 +72,7 @@ def adjust_shutdown_times(df):
     return df
 
 
-def run_etl():
+def run_knast_hours_etl():
     logging.info("Starting ETL process")
     bq_client = bigquery.create_bigquery_client(os.getenv("GCP_PROJECT"))
     
