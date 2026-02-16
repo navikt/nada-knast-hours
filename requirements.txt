@@ -1,5 +1,5 @@
 db-dtypes == 1.5.0
-google-cloud-bigquery == 3.40.0
-google-cloud-bigquery-storage == 2.36.0
+google-cloud-bigquery == 3.40.1
+google-cloud-bigquery-storage == 2.36.1
 google-cloud-workstations==0.7.0
-pandas == 2.3.3
+pandas == 3.0.0
