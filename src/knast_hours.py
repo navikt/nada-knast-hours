@@ -22,7 +22,7 @@ def load_and_transform_usage_data(client):
 
     df = adjust_shutdown_times(df)
 
-    df["usage_hours"] = (df["timestamp_shutdown"] - df["timestamp_started"]).dt.total_seconds() / 3600
+    df["usage_hours"] = ((df["timestamp_shutdown"] - df["timestamp_started"]).dt.total_seconds() / 3600).round(2)
 
     return df
 
@@ -65,7 +65,10 @@ def adjust_shutdown_times(df):
         if i < len(df)-1:
             if df.iloc[i]['user'] == df.iloc[i+1]['user']:
                 if df.iloc[i]['timestamp_shutdown'] > df.iloc[i+1]['timestamp_started']:
-                    df.at[i, 'timestamp_shutdown'] = df.iloc[i+1]['timestamp_started'] - pd.Timedelta(1, 'm')
+                    df.at[i, 'timestamp_shutdown'] = max(
+                        df.iloc[i+1]['timestamp_started'] - pd.Timedelta(1, 'm'),
+                        df.iloc[i]['timestamp_started']
+                    )
         # Adjust shutdown times to ensure no shutdowns in the future
         if df.iloc[i]['timestamp_shutdown'] > datetime.datetime.now(datetime.timezone.utc):
             df.at[i, 'timestamp_shutdown'] = datetime.datetime.now(datetime.timezone.utc)
