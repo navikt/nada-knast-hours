@@ -5,19 +5,11 @@ import uuid
 import pandas as pd
 
 import bigquery
-from knast_configs import list_workstation_configs
 from knast_hours import load_and_transform_usage_data, load_and_transform_tk_data
 
 
-def load_workstation_configs():
-    configs = list_workstation_configs("knada-gcp", "knada")
-    rows = []
-    for config in configs:
-        rows.append({
-            "user": config.labels["subject-ident"],
-            "created_at": config.create_time.date(),
-        })
-    return pd.DataFrame(rows, columns=["user", "created_at"])
+def load_workstation_configs(client):
+    return bigquery.load_biqquery_data(client, "knast_configs_history")
 
 
 def run_knast_last_used_etl():
@@ -28,8 +20,8 @@ def run_knast_last_used_etl():
     logging.info("Loading and transforming knast usage data")
     df_usage = load_and_transform_usage_data(bq_client)
 
-    logging.info("Loading workstation configs from API")
-    df_configs = load_workstation_configs()
+    logging.info("Loading workstation configs from BQ history")
+    df_configs = load_workstation_configs(bq_client)
 
     logging.info("Loading and transforming teamkatalogen data")
     df_tk = load_and_transform_tk_data(bq_client)
@@ -46,7 +38,6 @@ def run_knast_last_used_etl():
     )
 
     df_last_used = pd.merge(df_last_used, df_configs, on="user", how="left")
-    df_last_used["knast_exists"] = df_last_used["created_at"].notna()
 
     df_last_used = pd.merge(df_last_used, df_tk, left_on="user", right_on="navIdent", how="left")
     df_last_used = pd.merge(df_last_used, df_personer[["navident", "inactive"]], left_on="user", right_on="navident", how="left")
