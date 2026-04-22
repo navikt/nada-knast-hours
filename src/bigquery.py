@@ -7,9 +7,9 @@ def create_bigquery_client(project):
     return Client(project=project)
 
 
-def create_table(client, table_id, schema):
+def create_table(client, table_id, schema, exists_ok=False):
     table = Table(table_id, schema=schema)
-    return client.create_table(table)
+    return client.create_table(table, exists_ok=exists_ok)
 
 
 def load_biqquery_data(client, query_name):
@@ -36,6 +36,22 @@ knast_hours_schema = [
     SchemaField("timestamp_started", "TIMESTAMP"),
     SchemaField("timestamp_shutdown", "TIMESTAMP"),
     SchemaField("usage_hours", "FLOAT"),
+]
+
+
+knast_last_used_schema = [
+    SchemaField("uuid", "STRING", description="Random row identifier, regenerated on each run"),
+    SchemaField("productarea", "STRING"),
+    SchemaField("roles", "STRING"),
+    SchemaField("last_used", "TIMESTAMP", description="Most recent session end across all sessions"),
+    SchemaField("created_at", "DATE", description="Date the workstation config was created"),
+    SchemaField("knast_exists", "BOOLEAN", description="Whether the workstation config still exists"),
+    SchemaField("inactive", "BOOLEAN", description="Whether the user is no longer employed at NAV"),
+]
+
+
+knast_inactive_users_schema = [
+    SchemaField("user", "STRING", description="Navident of the user"),
 ]
 
 
