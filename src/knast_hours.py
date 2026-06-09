@@ -34,7 +34,7 @@ def load_and_transform_tk_data(client):
     df_tk = df_tk[df_tk['members'].str.len() > 0]
 
     # Normalize the JSON data
-    df_members_normalized = pd.json_normalize(df_tk['members'].explode())[["navIdent", "roles"]]
+    df_members_normalized = pd.json_normalize(df_tk['members'].explode())[["navIdent", "roles"]].reset_index(drop=True)
     # Repeat the other columns to match the length of the normalized data
     df_tk_repeated = df_tk.loc[df_tk.index.repeat(df_tk['members'].str.len())].reset_index(drop=True)
 
